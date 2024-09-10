@@ -32,7 +32,7 @@
             color: red;
             font-size: 24px;
         }
-        #gameOver {
+        #gameOver, #victory {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -45,7 +45,7 @@
             width: 80%;
             max-width: 600px;
         }
-        #gameOver button {
+        #gameOver button, #victory button {
             margin: 15px;
             padding: 10px 20px;
         }
@@ -54,7 +54,7 @@
             font-family: 'Undertale';
             src: url('https://fonts.cdnfonts.com/css/8bit-wonder') format('woff2');
         }
-        #gameOver {
+        #gameOver, #victory {
             font-family: 'Undertale', sans-serif;
             background-color: rgba(0, 0, 0, 0.9);
             border: 6px solid white;
@@ -67,7 +67,7 @@
             text-shadow: 3px 3px #ff0000;
             margin-bottom: 30px;
         }
-        .gameOver-button {
+        .gameOver-button, .victory-button {
             font-family: 'Undertale', sans-serif;
             font-size: 24px;
             background-color: #ffff00;
@@ -78,7 +78,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .gameOver-button:hover {
+        .gameOver-button:hover, .victory-button:hover {
             background-color: #ff0000;
             color: #ffff00;
             border-color: #ffff00;
@@ -86,8 +86,8 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div id="scoreElement">Temps: 00:00:00</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="score">Temps: 00:00:00</div>
     <div id="lives">❤️❤️❤️</div>
     <div id="gameOver">
         <h2 class="undertale-text">Game Over</h2>
@@ -96,14 +96,23 @@
         <button class="gameOver-button" onclick="location.reload()">Regénérer le niveau</button>
         <button id="quit" class="gameOver-button">Quitter</button>
     </div>
+    <div id="victory">
+        <h2 class="undertale-text">Victoire!</h2>
+        <p class="undertale-text" id="victoryScore">Temps final: 00:00:00</p>
+        <button id="nextLevel" class="victory-button">Niveau suivant</button>
+        <button class="victory-button" onclick="location.reload()">Rejouer ce niveau</button>
+        <button id="quitVictory" class="victory-button">Quitter</button>
+    </div>
 
     <script>
-        //const canvas = document.getElementById('gameCanvas');
+        const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        //const scoreElement = document.getElementById('score');
+        const scoreElement = document.getElementById('score');
         const livesElement = document.getElementById('lives');
         const gameOverElement = document.getElementById('gameOver');
+        const victoryElement = document.getElementById('victory');
         const finalScoreElement = document.getElementById('finalScore');
+        const victoryScoreElement = document.getElementById('victoryScore');
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -120,7 +129,7 @@
             height: 40,
             speed: 5,
             jumpForce: 15,
-            gravity: 0.5,
+            gravity: 0.3,
             isJumping: false,
             velocityY: 0,
             velocityX: 0
@@ -251,6 +260,7 @@
             updateScore();
             updateLives();
             gameOverElement.style.display = 'none';
+            victoryElement.style.display = 'none';
             terrain = [];
             enemies = [];
             generateTerrain();
@@ -369,9 +379,7 @@
             ctx.restore();
 
             if (cat.x > levelWidth - 300 && cat.y === canvas.height - groundHeight - cat.height) {
-                const finalTime = formatTime(elapsedTime);
-                alert(`Niveau terminé! Temps final: ${finalTime}`);
-                resetGame();
+                victory();
             }
 
             updateScore();
@@ -399,11 +407,20 @@
             gameOverElement.style.display = 'block';
         }
 
+        function victory() {
+            const finalTime = formatTime(elapsedTime);
+            victoryScoreElement.textContent = `Temps final: ${finalTime}`;
+            victoryElement.style.display = 'block';
+        }
+
         const keys = {};
 
         document.addEventListener('keydown', (event) => {
             keys[event.key] = true;
             handleMovement();
+            if (event.key === 'Escape') {
+                window.location.href = '{{ url("/") }}';
+            }
         });
 
         document.addEventListener('keyup', (event) => {
@@ -423,6 +440,28 @@
             if (keys['ArrowUp'] && !cat.isJumping) {
                 cat.velocityY = -cat.jumpForce;
                 cat.isJumping = true;
+            }
+
+
+            
+            if (keys['q'] || keys['Q']) {
+                cat.velocityX = -cat.speed;
+            }
+            if (keys['d'] || keys['D']) {
+                cat.velocityX = cat.speed;
+            }
+            if ((keys['z'] || keys['Z']) && !cat.isJumping) {
+                cat.velocityY = -cat.jumpForce;
+                cat.isJumping = true;
+            }
+
+            if (keys[' '] && !cat.isJumping) {
+                cat.velocityY = -cat.jumpForce;
+                cat.isJumping = true;
+            }
+
+            if (keys['r'] || keys['R']) {
+                location.reload();
             }
         }
 

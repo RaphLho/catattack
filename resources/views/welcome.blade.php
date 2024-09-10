@@ -55,6 +55,7 @@
         transform: scale(1.05);
         box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
     }
+    
     .levels-button {
         background-color: #ff0000;
     }
@@ -82,6 +83,26 @@
         transform: scale(1.05);
         box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
     }
+
+    .skins-button {
+        background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);
+        background-size: 600% 600%;
+        animation: rainbow 6s ease infinite;
+    }
+    .skins-button:hover {
+        background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);
+        background-size: 600% 600%;
+        animation: rainbow 3s ease infinite;
+        color: #ffffff;
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+    }
+    @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
     .cat-icon {
         font-size: 48px;
         margin: 0 15px;
@@ -97,8 +118,10 @@
     </h1>
     <div class="menu-buttons">
         <a href="{{ url('/game/level') }}" class="menu-button play-button">Jouer</a>
-        <button class="menu-button levels-button">Niveaux</button>
+        <a href="{{ url('/levels/SelectLevels') }}" class="menu-button levels-button">Niveaux</a>
+        <a href="{{ url('/skins') }}" class="menu-button skins-button">Skins</a>
         <button class="menu-button settings-button">Paramètres</button>
+        <a href="{{ url('/game/leaderboard') }}" class="menu-button settings-button">Leaderboard</a>
         <button class="menu-button exit-button" onclick="window.location.href='https://www.google.com'">Quitter</button>
     </div>
 </div>

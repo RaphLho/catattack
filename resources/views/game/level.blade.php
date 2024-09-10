@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CatAttack</title>
     <style>
+        
+
+        @font-face {
+            font-family: 'Undertale';
+            src: url('MonsterFriendFore.otf') format("opentype");
+        }
         body, html {
             background-color: #1a1a2e;
             margin: 0;
@@ -48,11 +54,6 @@
         #gameOver button, #victory button {
             margin: 15px;
             padding: 10px 20px;
-        }
-
-        @font-face {
-            font-family: 'Undertale';
-            src: url('https://fonts.cdnfonts.com/css/8bit-wonder') format('woff2');
         }
         #gameOver, #victory {
             font-family: 'Undertale', sans-serif;
@@ -99,8 +100,8 @@
     <div id="victory">
         <h2 class="undertale-text">Victoire!</h2>
         <p class="undertale-text" id="victoryScore">Temps final: 00:00:00</p>
-        <button id="nextLevel" class="victory-button">Niveau suivant</button>
-        <button class="victory-button" onclick="location.reload()">Rejouer ce niveau</button>
+        <button id="gameOver-button" onclick="location.reload()" class="victory-button">Niveau suivant</button>
+        <button id="restartVictory" class="victory-button">Recommencer</button>   
         <button id="quitVictory" class="victory-button">Quitter</button>
     </div>
 
@@ -141,11 +142,13 @@
 
         let terrain = [];
         let enemies = [];
+        let initialEnemies = [];
         const obstacleTypes = ['platform', 'hole', 'platform_with_spike', 'moving_platform', 'high_platform'];
 
         let startTime;
         let elapsedTime = 0;
         let lives = 3;
+        let gameEnded = false;
 
         function generateTerrain() {
             let x = 0;
@@ -222,7 +225,7 @@
                 
                 // Add enemy with 20% chance
                 if (Math.random() < 0.2) {
-                    enemies.push({
+                    const enemy = {
                         x: x + width / 2,
                         y: canvas.height - groundHeight - 30,
                         width: 30,
@@ -231,7 +234,9 @@
                         direction: Math.random() < 0.5 ? -1 : 1,
                         minX: x,
                         maxX: x + width
-                    });
+                    };
+                    enemies.push(enemy);
+                    initialEnemies.push({...enemy});
                 }
                 
                 x += width;
@@ -257,21 +262,22 @@
             startTime = Date.now();
             elapsedTime = 0;
             lives = 3;
+            gameEnded = false;
+            enemies = initialEnemies.map(enemy => ({...enemy}));
             updateScore();
             updateLives();
             gameOverElement.style.display = 'none';
             victoryElement.style.display = 'none';
-            terrain = [];
-            enemies = [];
-            generateTerrain();
             gameLoop();
         }
 
         function updateScore() {
-            const currentTime = Date.now();
-            elapsedTime = currentTime - startTime;
-            const formattedTime = formatTime(elapsedTime);
-            scoreElement.textContent = `Temps: ${formattedTime}`;
+            if (!gameEnded) {
+                const currentTime = Date.now();
+                elapsedTime = currentTime - startTime;
+                const formattedTime = formatTime(elapsedTime);
+                scoreElement.textContent = `Temps: ${formattedTime}`;
+            }
         }
 
         function formatTime(ms) {
@@ -286,6 +292,8 @@
         }
 
         function gameLoop() {
+            if (gameEnded) return;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             camera.x = cat.x - canvas.width / 4;
@@ -317,12 +325,24 @@
                 }
             });
 
-            enemies.forEach(enemy => {
+            enemies.forEach((enemy, index) => {
                 ctx.fillStyle = '#FF0000';
                 ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
                 enemy.x += enemy.speed * enemy.direction;
                 if (enemy.x <= enemy.minX || enemy.x + enemy.width >= enemy.maxX) {
                     enemy.direction *= -1;
+                }
+
+                // Check if cat is jumping on the enemy
+                if (cat.velocityY > 0 && 
+                    cat.x < enemy.x + enemy.width &&
+                    cat.x + cat.width > enemy.x &&
+                    cat.y + cat.height > enemy.y &&
+                    cat.y + cat.height < enemy.y + enemy.height / 2) {
+                    // Remove the enemy
+                    enemies.splice(index, 1);
+                    // Make the cat bounce
+                    cat.velocityY = -cat.jumpForce / 2;
                 }
             });
 
@@ -362,7 +382,8 @@
                     cat.x < enemy.x + enemy.width &&
                     cat.x + cat.width > enemy.x &&
                     cat.y < enemy.y + enemy.height &&
-                    cat.y + cat.height > enemy.y
+                    cat.y + cat.height > enemy.y &&
+                    cat.velocityY <= 0  // Only lose life if not jumping on the enemy
                 ) {
                     loseLife();
                 }
@@ -373,7 +394,21 @@
             }
 
             const catImage = new Image();
-            catImage.src = 'https://s3-us-west-2.amazonaws.com/mb.images/vinafrog/listing/VFSIL0095.jpg';
+            const selectedSkin = localStorage.getItem('selectedSkin') || 'chat-normal';
+            let catImageSrc = '';
+
+            switch (selectedSkin) {
+                case 'chat-ninja':
+                    catImageSrc = 'https://www.creativefabrica.com/wp-content/uploads/2022/12/25/Ninja-Cat-Portrait-Steampunk-Style-54365317-1.png';
+                    break;
+                case 'chat-spatial':
+                    catImageSrc = 'https://www.sciencesetavenir.fr/assets/img/2016/03/31/cover-r4x3w1200-57dfbf2666447-space-chat.jpg';
+                    break;
+                default:
+                    catImageSrc = 'https://s3-us-west-2.amazonaws.com/mb.images/vinafrog/listing/VFSIL0095.jpg';
+            }
+
+            catImage.src = catImageSrc;
             ctx.drawImage(catImage, cat.x, cat.y, cat.width, cat.height);
 
             ctx.restore();
@@ -402,12 +437,14 @@
         }
 
         function gameOver() {
+            gameEnded = true;
             const finalTime = formatTime(elapsedTime);
             finalScoreElement.textContent = `Temps final: ${finalTime}`;
             gameOverElement.style.display = 'block';
         }
 
         function victory() {
+            gameEnded = true;
             const finalTime = formatTime(elapsedTime);
             victoryScoreElement.textContent = `Temps final: ${finalTime}`;
             victoryElement.style.display = 'block';
@@ -470,6 +507,13 @@
             camera.x = cat.x - canvas.width / 4;
         });
         document.getElementById('quit').addEventListener('click', () => {
+            window.location.href = '{{ url("/") }}';
+        });
+        document.getElementById('restartVictory').addEventListener('click', () => {
+            resetGame();
+            camera.x = cat.x - canvas.width / 4;
+        });
+        document.getElementById('quitVictory').addEventListener('click', () => {
             window.location.href = '{{ url("/") }}';
         });
 

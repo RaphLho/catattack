@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,29 +11,33 @@
             background-color: #1a1a2e;
             color: #e94560;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             min-height: 100vh;
             margin: 0;
         }
+
         .container {
             background-color: #16213e;
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
             text-align: center;
+            margin: auto;
         }
+
         h1 {
             font-size: 36px;
             margin-bottom: 30px;
             text-shadow: 2px 2px #0f3460;
         }
+
         .levels-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
+
         .level-option {
             background-color: #0f3460;
             border-radius: 10px;
@@ -40,23 +45,65 @@
             cursor: pointer;
             transition: transform 0.3s ease;
         }
+
         .level-option:hover {
             transform: scale(1.05);
         }
+
         .level-number {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 10px;
         }
+
         .difficulty {
             font-size: 18px;
         }
-        .easy { color: #4CAF50; }
-        .medium { color: #FFC107; }
-        .hard { color: #F44336; }
+
+        .easy {
+            color: #4CAF50;
+        }
+
+        .medium {
+            color: #FFC107;
+        }
+
+        .hard {
+            color: #F44336;
+        }
+
+        .play-button {
+            font-family: 'Arial', sans-serif;
+            padding: 10px 20px;
+            margin: 15px;
+            display: inline-block;
+            background-color: #4caf50;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .play-button:hover {
+            background-color: #155e24;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
     </style>
 </head>
+
 <body>
+    <a href="{{ url('/') }}" class="play-button home-button">Retour à l'accueil</a>
     <div class="container">
         <h1>Choix des Niveaux</h1>
         <div class="levels-grid">
@@ -79,18 +126,29 @@
         }
     </script>
 </body>
+
 </html>
 
 @php
-function getDifficultyClass($level) {
-    if ($level <= 3) return 'easy';
-    if ($level <= 7) return 'medium';
-    return 'hard';
-}
+    function getDifficultyClass($level)
+    {
+        if ($level <= 3) {
+            return 'easy';
+        }
+        if ($level <= 7) {
+            return 'medium';
+        }
+        return 'hard';
+    }
 
-function getDifficultyText($level) {
-    if ($level <= 3) return 'Facile';
-    if ($level <= 7) return 'Moyen';
-    return 'Difficile';
-}
+    function getDifficultyText($level)
+    {
+        if ($level <= 3) {
+            return 'Facile';
+        }
+        if ($level <= 7) {
+            return 'Moyen';
+        }
+        return 'Difficile';
+    }
 @endphp

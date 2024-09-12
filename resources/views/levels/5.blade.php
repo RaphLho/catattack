@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CatAttack - Niveau 1</title>
+    <title>CatAttack - Niveau 5</title>
     <style>
         @font-face {
             font-family: 'Undertale';
@@ -108,15 +108,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const timeElement = document.getElementById('time');
-        const scoreElement = document.getElementById('score')
         const livesElement = document.getElementById('lives');
         const gameOverElement = document.getElementById('gameOver');
         const victoryElement = document.getElementById('victory');
         const finalTimeElement = document.getElementById('finalTime');
-        const finalScoreElement = document.getElementById('finalScore');
-        const victoryTimeElement = document.getElementById('victoryTime');
         const victoryScoreElement = document.getElementById('victoryScore');
-
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -131,7 +127,7 @@
             y: 200,
             width: 40,
             height: 40,
-            speed: 10,
+            speed: 8,
             jumpForce: 15,
             gravity: 0.5,
             isJumping: false,
@@ -139,7 +135,7 @@
             velocityX: 0
         };
 
-        const levelWidth = 7500; // Increased level width
+        const levelWidth = 10000; // Increased level width
         const groundHeight = 50;
         let camera = { x: 0, y: 0 };
 
@@ -148,150 +144,156 @@
         let spikes = [];
         let startTime;
         let elapsedTime = 0;
-        let lives = 3; // Reduced starting lives
+        let lives = 3;
         let gameEnded = false;
         let initialSpeed;
 
-        
-        const platformImage = new Image();
-        platformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/678/912/non_2x/stone-tiles-texture-in-cartoon-style-free-vector.jpg';
-
-        const moovingPlatformImage = new Image();
-        moovingPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/448/235/non_2x/light-brown-cartoon-wood-texture-pattern-wallpaper-background-free-vector.jpg';
-
-        const spikeImage = new Image();
-        spikeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/758/560/non_2x/spear-icon-fairy-tale-knight-armor-fairytale-soldier-sword-cartoon-medieval-weapon-illustration-vector.jpg';
-
-        const holeImage = new Image();
-        holeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/046/307/862/non_2x/water-ripple-surface-with-sunlight-reflections-in-cartoon-style-game-texture-top-view-beach-ocean-clean-and-deep-water-vector.jpg';
-
-
-        const highPlatformImage = new Image();
-        highPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/013/987/849/non_2x/stone-wall-from-bricks-rock-game-background-in-cartoon-style-seamless-textured-surface-ui-game-asset-road-or-floor-material-illustration-vector.jpg';
-
-        const finishLine = new Image();
-        finishLine.src =
-            'https://media.istockphoto.com/id/537073587/fr/vectoriel/%C3%A9chiquier.jpg?s=612x612&w=0&k=20&c=XqGNOIwnHXqrPg-Iz1rLsgRVQY8CdEvU85mPJSn8tUU=';
-
-        const startLine = new Image();
-        startLine.src =
-            'https://static.vecteezy.com/system/resources/previews/040/520/651/non_2x/brown-wooden-texture-and-background-vector.jpg';
-
-        const monsterImg = new Image();
-        monsterImg.src = 'https://static.vecteezy.com/system/resources/previews/022/946/248/large_2x/cute-monster-character-colored-red-with-angry-expression-3d-illustration-generative-ai-free-png.png';
-
         function generateTerrain() {
             terrain = [
-                { 
-                    type: 'platform', 
-                    x: 0, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 1500, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 2250, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 3000, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 3750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 4500, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 5250, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 6000, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 6750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-
-
-
-                { type: 'platform', x: levelWidth - 300, y: canvas.height - groundHeight, width: 300, height: groundHeight,  image:finishLine  }
+                { type: 'platform', x: 0, y: canvas.height - groundHeight, width: 300, height: groundHeight, color: '#0f3460' },
+                { type: 'platform', x: 500, y: canvas.height - 150, width: 200, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 800, y: canvas.height - 300, width: 150, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 1200, y: canvas.height - 200, width: 250, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 1600, y: canvas.height - 350, width: 180, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 2000, y: canvas.height - 250, width: 220, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 2400, y: canvas.height - 400, width: 160, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 2800, y: canvas.height - 300, width: 200, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 3200, y: canvas.height - 200, width: 180, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 3600, y: canvas.height - 350, width: 240, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 4000, y: canvas.height - 250, width: 190, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 4400, y: canvas.height - 400, width: 170, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 4800, y: canvas.height - 300, width: 210, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 5200, y: canvas.height - 200, width: 160, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 5600, y: canvas.height - 350, width: 150, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 6000, y: canvas.height - 250, width: 200, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 6400, y: canvas.height - 400, width: 180, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 6800, y: canvas.height - 300, width: 140, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 7200, y: canvas.height - 200, width: 220, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 7600, y: canvas.height - 350, width: 190, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 8000, y: canvas.height - 250, width: 130, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 8400, y: canvas.height - 400, width: 210, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 8800, y: canvas.height - 300, width: 120, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 9200, y: canvas.height - 200, width: 110, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 9600, y: canvas.height - 350, width: 200, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: levelWidth - 300, y: canvas.height - groundHeight, width: 300, height: groundHeight, color: '#FFFFFF' }
             ];
 
             enemies = [
-                { type: 'runner', x: 700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 5, direction: 1, minX: 700, maxX: 900 },
-                { type: 'jumper', x: 1500, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 15, gravity: 0.5, isJumping: false },
-                { type: 'shooter', x: 2300, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 2000, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 3100, y: canvas.height - groundHeight - 100, width: 30, height: 30, speed: 3, amplitude: 50, angle: 0 },
-                { type: 'runner', x: 3900, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 6, direction: 1, minX: 3900, maxX: 4100 },
-                { type: 'jumper', x: 4700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 18, gravity: 0.5, isJumping: false },
-                { type: 'shooter', x: 5500, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 6300, y: canvas.height - groundHeight - 150, width: 30, height: 30, speed: 4, amplitude: 80, angle: 0 }
+                { type: 'runner', x: 550, y: canvas.height - 150 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 500, maxX: 700 },
+                { type: 'jumper', x: 850, y: canvas.height - 300 - 30, width: 30, height: 30, speed: 3, jumpForce: 18, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 1250, y: canvas.height - 200 - 30, width: 30, height: 30, shootInterval: 1800, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 1650, y: canvas.height - 350 - 120, width: 30, height: 30, speed: 4, amplitude: 70, angle: 0 },
+                { type: 'runner', x: 2050, y: canvas.height - 250 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 2000, maxX: 2220 },
+                { type: 'jumper', x: 2450, y: canvas.height - 400 - 30, width: 30, height: 30, speed: 3, jumpForce: 20, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 2850, y: canvas.height - 300 - 30, width: 30, height: 30, shootInterval: 1300, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 3250, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 3200, maxX: 3380 },
+                { type: 'jumper', x: 3650, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, jumpForce: 22, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 4050, y: canvas.height - 250 - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 4450, y: canvas.height - 400 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 4400, maxX: 4570 },
+                { type: 'jumper', x: 4850, y: canvas.height - 300 - 30, width: 30, height: 30, speed: 3, jumpForce: 24, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 5250, y: canvas.height - 200 - 30, width: 30, height: 30, shootInterval: 1700, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 5650, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 5600, maxX: 5750 },
+                { type: 'jumper', x: 6050, y: canvas.height - 250 - 30, width: 30, height: 30, speed: 3, jumpForce: 26, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 6450, y: canvas.height - 400 - 30, width: 30, height: 30, shootInterval: 1900, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 6850, y: canvas.height - 300 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 6800, maxX: 6940 },
+                { type: 'jumper', x: 7250, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, jumpForce: 28, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 7650, y: canvas.height - 350 - 30, width: 30, height: 30, shootInterval: 2100, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 8050, y: canvas.height - 250 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 8000, maxX: 8130 },
             ];
 
             spikes = [
-                { x: 1000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 2000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 3000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 4000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 5000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 6000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 7000, y: canvas.height - groundHeight - 20, width: 20, height: 20 }
+
+                { type: 'platform', x: 400, y: canvas.height - 200, width: 200, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 700, y: canvas.height - 350, width: 150, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 1000, y: canvas.height - 150, width: 250, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 1400, y: canvas.height - 300, width: 180, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 1700, y: canvas.height - 200, width: 220, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 2000, y: canvas.height - 400, width: 160, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 2300, y: canvas.height - 250, width: 200, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 2600, y: canvas.height - 350, width: 180, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 2900, y: canvas.height - 150, width: 240, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 3200, y: canvas.height - 250, width: 190, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 3500, y: canvas.height - 350, width: 170, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 3800, y: canvas.height - 200, width: 210, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 4100, y: canvas.height - 300, width: 160, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 4400, y: canvas.height - 400, width: 150, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 4700, y: canvas.height - 250, width: 200, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 5000, y: canvas.height - 350, width: 180, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 5300, y: canvas.height - 450, width: 140, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 5600, y: canvas.height - 200, width: 220, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 5900, y: canvas.height - 300, width: 190, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 6200, y: canvas.height - 400, width: 130, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 6500, y: canvas.height - 250, width: 210, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 6800, y: canvas.height - 350, width: 120, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 7100, y: canvas.height - 450, width: 110, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 7400, y: canvas.height - 200, width: 200, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 7700, y: canvas.height - 300, width: 100, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 8000, y: canvas.height - 400, width: 90, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 8300, y: canvas.height - 250, width: 230, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 8600, y: canvas.height - 350, width: 150, height: 20, color: '#FF6B6B' },
+                { type: 'platform', x: 8900, y: canvas.height - 450, width: 140, height: 20, color: '#4ECDC4' },
+                { type: 'platform', x: 9200, y: canvas.height - 200, width: 220, height: 20, color: '#45B7D1' },
+                { type: 'platform', x: 9500, y: canvas.height - 300, width: 160, height: 20, color: '#FF6B6B' },             
+                { type: 'platform', x: levelWidth - 300, y: canvas.height - groundHeight, width: 300, height: groundHeight, color: '#FFFFFF' }
+            ];
+
+            enemies = [
+                { type: 'runner', x: 400, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 400, maxX: 600 },
+                { type: 'jumper', x: 700, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, jumpForce: 18, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 1000, y: canvas.height - 150 - 30, width: 30, height: 30, shootInterval: 1800, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 1400, y: canvas.height - 300 - 120, width: 30, height: 30, speed: 4, amplitude: 70, angle: 0 },
+                { type: 'runner', x: 1700, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 1700, maxX: 1920 },
+                { type: 'jumper', x: 2000, y: canvas.height - 400 - 30, width: 30, height: 30, speed: 3, jumpForce: 20, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 2300, y: canvas.height - 250 - 30, width: 30, height: 30, shootInterval: 1300, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 3200, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 3200, maxX: 3400 },
+                { type: 'jumper', x: 3500, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, jumpForce: 22, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 3800, y: canvas.height - 300 - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 4700, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 4700, maxX: 4900 },
+                { type: 'jumper', x: 5000, y: canvas.height - 150 - 30, width: 30, height: 30, speed: 3, jumpForce: 24, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 5300, y: canvas.height - 250 - 30, width: 30, height: 30, shootInterval: 1700, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 6500, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 6500, maxX: 6700 },
+                { type: 'jumper', x: 6800, y: canvas.height - 200 - 30, width: 30, height: 30, speed: 3, jumpForce: 26, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 7100, y: canvas.height - 300 - 30, width: 30, height: 30, shootInterval: 1900, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 8300, y: canvas.height - 250 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 8300, maxX: 8500 },
+                { type: 'jumper', x: 8600, y: canvas.height - 350 - 30, width: 30, height: 30, speed: 3, jumpForce: 28, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 8900, y: canvas.height - 150 - 30, width: 30, height: 30, shootInterval: 2100, lastShot: 0, bullets: [] },
+                { type: 'runner', x: 9500, y: canvas.height - 300 - 30, width: 30, height: 30, speed: 3, direction: 1, minX: 9500, maxX: 9700 },
+
+            ];
+
+            spikes = [
+                { x: 500, y: canvas.height - 200 - 20, width: 20, height: 20 },
+                { x: 800, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 1100, y: canvas.height - 150 - 20, width: 20, height: 20 },
+                { x: 1500, y: canvas.height - 300 - 20, width: 20, height: 20 },
+                { x: 1800, y: canvas.height - 200 - 20, width: 20, height: 20 },
+                { x: 2100, y: canvas.height - 400 - 20, width: 20, height: 20 },
+                { x: 2400, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 2700, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 3000, y: canvas.height - 150 - 20, width: 20, height: 20 },
+                { x: 3300, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 3600, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 3900, y: canvas.height - 200 - 20, width: 20, height: 20 },
+                { x: 4200, y: canvas.height - 300 - 20, width: 20, height: 20 },
+                { x: 4500, y: canvas.height - 400 - 20, width: 20, height: 20 },
+                { x: 4800, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 5100, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 5400, y: canvas.height - 150 - 20, width: 20, height: 20 },
+                { x: 5700, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 6000, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 6300, y: canvas.height - 200 - 20, width: 20, height: 20 },
+                { x: 6600, y: canvas.height - 300 - 20, width: 20, height: 20 },
+                { x: 6900, y: canvas.height - 400 - 20, width: 20, height: 20 },
+                { x: 7200, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 7500, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 7800, y: canvas.height - 150 - 20, width: 20, height: 20 },
+                { x: 8100, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 8400, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 8700, y: canvas.height - 150 - 20, width: 20, height: 20 },
+                { x: 9000, y: canvas.height - 250 - 20, width: 20, height: 20 },
+                { x: 9300, y: canvas.height - 350 - 20, width: 20, height: 20 },
+                { x: 9600, y: canvas.height - 200 - 20, width: 20, height: 20 },
+
             ];
 
             initialSpeed = cat.speed;
@@ -311,28 +313,20 @@
             lives = 3;
             gameEnded = false;
             cat.speed = initialSpeed;
-            updateTime();
+            updateScore();
             updateLives();
-            scoreElement.textContent = 'Score: 0'
             gameOverElement.style.display = 'none';
             victoryElement.style.display = 'none';
             generateTerrain();
             gameLoop();
         }
 
-        function updateTime() {
+        function updateScore() {
             if (!gameEnded) {
                 const currentTime = Date.now();
                 elapsedTime = currentTime - startTime;
                 const formattedTime = formatTime(elapsedTime);
                 timeElement.textContent = `Temps: ${formattedTime}`;
-            }
-        }
-        
-        function updateScore() {
-            if (!gameEnded) {
-                score += 50
-                scoreElement.textContent = `Score: ${score}`;
             }
         }
 
@@ -358,13 +352,8 @@
             ctx.translate(-camera.x, 0);
 
             terrain.forEach(obstacle => {
-                
-                if (obstacle.image) {
-                        ctx.drawImage(obstacle.image, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                    } else {
-                        ctx.fillStyle = obstacle.color;
-                        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                    }
+                ctx.fillStyle = obstacle.color;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             });
 
             enemies.forEach((enemy, index) => {
@@ -434,7 +423,6 @@
                         // Le chat saute sur l'ennemi
                         enemies.splice(index, 1);
                         cat.velocityY = -cat.jumpForce / 2; // Petit rebond après avoir tué l'ennemi
-                        updateScore()
                     } else {
                         loseLife();
                     }
@@ -507,7 +495,7 @@
                 victory();
             }
 
-            updateTime();
+            updateScore();
             requestAnimationFrame(gameLoop);
         }
 
@@ -529,8 +517,6 @@
         function gameOver() {
             gameEnded = true;
             const finalTime = formatTime(elapsedTime);
-            const finalScore = score + parseInt(finalTime.split(':')[2]);
-            finalScoreElement.textContent = `Score: ${finalScore}`;
             finalTimeElement.textContent = `Temps final: ${finalTime}`;
             gameOverElement.style.display = 'block';
         }
@@ -547,8 +533,7 @@
                 },
                 body: JSON.stringify({
                     score: finalScore,
-                    level: 1,
-                    name: localStorage.getItem('name')
+                    level: 5
                 })
             })
             .then(response => response.json())

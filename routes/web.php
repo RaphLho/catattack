@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Score;
+use App\Http\Controllers\ScoreController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::post('/scores', [ScoreController::class, 'saveScore']);
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,9 +19,14 @@ Route::get('/skins', function () {
 });
 
 Route::get('/game/leaderboard', function () {
-    $board = Controller::getScores();
-    return view('game.leaderboard', ["board"=> $board]);
+    $board = ScoreController::getScores();
+    return view('game.leaderboard', ["board"=> $board, "currentLevel"=>1, 'length'=> count($board)]);
 });
+Route::get('/game/leaderboard/{level}', function($level) {
+    $board = ScoreController::getScores();
+    return view('game.leaderboard_table', ['board' => $board, 'currentLevel' => $level, 'length'=> count($board)]);
+});
+
 
 Route::get('/levels/SelectLevels', function () {
     return view('levels.SelectLevels');

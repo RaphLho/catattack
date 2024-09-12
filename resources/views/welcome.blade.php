@@ -14,17 +14,17 @@
         color: #e94560;
         font-family: 'Arial', sans-serif;
         text-align: center;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
-        width: 80%;
-        max-width: 600px;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        width: 70%;
+        max-width: 500px;
     }
     .game-title {
-        font-size: 60px;
-        margin-bottom: 40px;
-        text-shadow: 3px 3px #0f3460;
-        letter-spacing: 2px;
+        font-size: 50px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px #0f3460;
+        letter-spacing: 1px;
     }
     .menu-buttons {
         display: flex;
@@ -35,14 +35,14 @@
         background-color: #0f3460;
         color: #ffffff;
         border: none;
-        padding: 20px 40px;
-        margin: 15px;
-        font-size: 28px;
-        border-radius: 50px;
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 22px;
+        border-radius: 40px;
         cursor: pointer;
         transition: all 0.3s ease;
-        width: 80%;
-        max-width: 300px;
+        width: 70%;
+        max-width: 250px;
         font-weight: bold;
         text-transform: uppercase;
     }
@@ -53,7 +53,7 @@
         background-color: #155e24;
         color: #ffffff;
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
     }
     
     .levels-button {
@@ -63,7 +63,7 @@
         background-color: rgb(146, 3, 3);
         color: #ffffff;
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
     }
     .settings-button {
         background-color: #ffa500;
@@ -72,7 +72,7 @@
         background-color: #8f5e03;
         color: #ffffff;
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
     }
     .exit-button {
         background-color: #353434;
@@ -81,7 +81,7 @@
         background-color: #000000;
         color: #ffffff;
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
     }
 
     .skins-button {
@@ -95,7 +95,7 @@
         animation: rainbow 3s ease infinite;
         color: #ffffff;
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
     }
     @keyframes rainbow {
         0% { background-position: 0% 50%; }
@@ -104,9 +104,44 @@
     }
     
     .cat-icon {
-        font-size: 48px;
-        margin: 0 15px;
+        font-size: 40px;
+        margin: 0 10px;
         vertical-align: middle;
+    }
+
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 22px;
+    }
+    input{
+        border-radius: 40px;
+        max-width : 250px;
+        padding: 8px 30px;
+        margin: 10px;
+        font-size: 22px;
+    }
+    a{
+        text-decoration: none;
+        font-family: 'Arial', sans-serif;    
+    }
+    #victory {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #16213e;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            width: 80%;
+            max-width: 600px;
+        }
+    label{        
+        color: #e94560;
     }
 </style>
 
@@ -118,10 +153,35 @@
     </h1>
     <div class="menu-buttons">
         <a href="{{ url('/game/level') }}" class="menu-button play-button">Jouer</a>
-        <a href="{{ url('/levels/SelectLevels') }}" class="menu-button levels-button">Niveaux</a>
+        <button onclick="enterName()"  class="menu-button levels-button">Niveaux</button>
         <a href="{{ url('/skins') }}" class="menu-button skins-button">Skins</a>
-        <button class="menu-button settings-button">Paramètres</button>
         <a href="{{ url('/game/leaderboard') }}" class="menu-button settings-button">Leaderboard</a>
         <button class="menu-button exit-button" onclick="window.location.href='https://www.google.com'">Quitter</button>
     </div>
 </div>
+
+<div id="victory">
+    <form name="PlayersName"  onsubmit="return validateForm()" action="levels/SelectLevels">
+        <label>Entrez votre nom</label>
+        <input name="player_name" type="text">
+        <input type="submit"  id="quitVictory" class="menu-button" value="Enregistrer">
+    </form>
+    <a href='/' id="restartVictory" class="menu-button">Retour à l'accueil</a>   
+</div>
+<script>
+        const name = document.getElementById('victory');
+    function enterName(){
+        name.style.display = "block"
+    }
+    
+function validateForm() {
+  let x = document.forms["PlayersName"]["player_name"].value;
+  if (x == "") {
+    alert("Veuillez remplir un nom");
+    return false;
+  } else {  
+    localStorage.setItem("name", x);   
+
+  }
+}
+</script>

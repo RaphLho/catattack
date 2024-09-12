@@ -19,7 +19,8 @@ class ScoreFactory extends Factory
     {
         return [
             'name' => Str::random(10),
-            'score' => rand(100, 10000)
+            'score' => rand(100, 10000),
+            'level'=> 0,
         ];
     }
 }

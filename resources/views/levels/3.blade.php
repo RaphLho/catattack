@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CatAttack - Niveau 1</title>
+    <title>CatAttack - Niveau 3</title>
     <style>
         @font-face {
             font-family: 'Undertale';
@@ -117,7 +117,6 @@
         const victoryTimeElement = document.getElementById('victoryTime');
         const victoryScoreElement = document.getElementById('victoryScore');
 
-
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -131,7 +130,7 @@
             y: 200,
             width: 40,
             height: 40,
-            speed: 10,
+            speed: 8,  // Reduced speed for more reasonable gameplay
             jumpForce: 15,
             gravity: 0.5,
             isJumping: false,
@@ -139,149 +138,54 @@
             velocityX: 0
         };
 
-        const levelWidth = 7500; // Increased level width
+        const levelWidth = 10000;
         const groundHeight = 50;
         let camera = { x: 0, y: 0 };
 
         let terrain = [];
         let enemies = [];
         let spikes = [];
+        let powerUps = [];
         let startTime;
         let elapsedTime = 0;
-        let lives = 3; // Reduced starting lives
+        let lives = 3;
         let gameEnded = false;
         let initialSpeed;
 
-        
-        const platformImage = new Image();
-        platformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/678/912/non_2x/stone-tiles-texture-in-cartoon-style-free-vector.jpg';
-
-        const moovingPlatformImage = new Image();
-        moovingPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/448/235/non_2x/light-brown-cartoon-wood-texture-pattern-wallpaper-background-free-vector.jpg';
-
-        const spikeImage = new Image();
-        spikeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/758/560/non_2x/spear-icon-fairy-tale-knight-armor-fairytale-soldier-sword-cartoon-medieval-weapon-illustration-vector.jpg';
-
-        const holeImage = new Image();
-        holeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/046/307/862/non_2x/water-ripple-surface-with-sunlight-reflections-in-cartoon-style-game-texture-top-view-beach-ocean-clean-and-deep-water-vector.jpg';
-
-
-        const highPlatformImage = new Image();
-        highPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/013/987/849/non_2x/stone-wall-from-bricks-rock-game-background-in-cartoon-style-seamless-textured-surface-ui-game-asset-road-or-floor-material-illustration-vector.jpg';
-
-        const finishLine = new Image();
-        finishLine.src =
-            'https://media.istockphoto.com/id/537073587/fr/vectoriel/%C3%A9chiquier.jpg?s=612x612&w=0&k=20&c=XqGNOIwnHXqrPg-Iz1rLsgRVQY8CdEvU85mPJSn8tUU=';
-
-        const startLine = new Image();
-        startLine.src =
-            'https://static.vecteezy.com/system/resources/previews/040/520/651/non_2x/brown-wooden-texture-and-background-vector.jpg';
-
-        const monsterImg = new Image();
-        monsterImg.src = 'https://static.vecteezy.com/system/resources/previews/022/946/248/large_2x/cute-monster-character-colored-red-with-angry-expression-3d-illustration-generative-ai-free-png.png';
-
         function generateTerrain() {
             terrain = [
-                { 
-                    type: 'platform', 
-                    x: 0, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 1500, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 2250, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 3000, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 3750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 4500, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 5250, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 6000, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-                { 
-                    type: 'platform', 
-                    x: 6750, 
-                    y: canvas.height - groundHeight, 
-                    width: 750, 
-                    height: groundHeight, 
-                    image: platformImage 
-                },
-
-
-
-                { type: 'platform', x: levelWidth - 300, y: canvas.height - groundHeight, width: 300, height: groundHeight,  image:finishLine  }
+                { type: 'platform', x: 0, y: canvas.height - groundHeight, width: levelWidth, height: groundHeight, color: '#0f3460' },
+                { type: 'platform', x: levelWidth - 300, y: canvas.height - groundHeight, width: 300, height: groundHeight, color: '#FFFFFF' },
+                { type: 'platform', x: 300, y: canvas.height - groundHeight - 150, width: 200, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 900, y: canvas.height - groundHeight - 200, width: 180, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 1800, y: canvas.height - groundHeight - 280, width: 170, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 2700, y: canvas.height - groundHeight - 190, width: 230, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 3000, y: canvas.height - groundHeight - 270, width: 180, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 3300, y: canvas.height - groundHeight - 230, width: 200, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 3600, y: canvas.height - groundHeight - 310, width: 190, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 3900, y: canvas.height - groundHeight - 170, width: 220, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 5100, y: canvas.height - groundHeight - 200, width: 230, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 6000, y: canvas.height - groundHeight - 320, width: 170, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 6300, y: canvas.height - groundHeight - 180, width: 220, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 6600, y: canvas.height - groundHeight - 300, width: 180, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 6900, y: canvas.height - groundHeight - 220, width: 210, height: 20, color: '#0f3460' },
+                { type: 'platform', x: 7200, y: canvas.height - groundHeight - 340, width: 160, height: 20, color: '#0f3460' },
+             
             ];
 
             enemies = [
-                { type: 'runner', x: 700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 5, direction: 1, minX: 700, maxX: 900 },
+                { type: 'runner', x: 700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 4, direction: 1, minX: 700, maxX: 1000 },
                 { type: 'jumper', x: 1500, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 15, gravity: 0.5, isJumping: false },
                 { type: 'shooter', x: 2300, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 2000, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 3100, y: canvas.height - groundHeight - 100, width: 30, height: 30, speed: 3, amplitude: 50, angle: 0 },
-                { type: 'runner', x: 3900, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 6, direction: 1, minX: 3900, maxX: 4100 },
-                { type: 'jumper', x: 4700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 18, gravity: 0.5, isJumping: false },
-                { type: 'shooter', x: 5500, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 6300, y: canvas.height - groundHeight - 150, width: 30, height: 30, speed: 4, amplitude: 80, angle: 0 }
+                { type: 'flyer', x: 3100, y: canvas.height - groundHeight - 120, width: 30, height: 30, speed: 3, amplitude: 70, angle: 0 },
+                { type: 'runner', x: 3900, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 5, direction: 1, minX: 3900, maxX: 4200 },
+                { type: 'jumper', x: 4700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 17, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 5500, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 1800, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 6300, y: canvas.height - groundHeight - 180, width: 30, height: 30, speed: 4, amplitude: 100, angle: 0 },
+                { type: 'runner', x: 7100, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 6, direction: 1, minX: 7100, maxX: 7400 },
+                { type: 'jumper', x: 7900, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 3, jumpForce: 18, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 8700, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 9500, y: canvas.height - groundHeight - 200, width: 30, height: 30, speed: 5, amplitude: 120, angle: 0 }
             ];
 
             spikes = [
@@ -291,7 +195,16 @@
                 { x: 4000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
                 { x: 5000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
                 { x: 6000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
-                { x: 7000, y: canvas.height - groundHeight - 20, width: 20, height: 20 }
+                { x: 7000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
+                { x: 8000, y: canvas.height - groundHeight - 20, width: 20, height: 20 },
+                { x: 9000, y: canvas.height - groundHeight - 20, width: 20, height: 20 }
+            ];
+
+            powerUps = [
+                { type: 'speed', x: 1500, y: canvas.height - groundHeight - 50, width: 30, height: 30 },
+                { type: 'jump', x: 3500, y: canvas.height - groundHeight - 50, width: 30, height: 30 },
+                { type: 'invincibility', x: 5500, y: canvas.height - groundHeight - 50, width: 30, height: 30 },
+                { type: 'extraLife', x: 7500, y: canvas.height - groundHeight - 50, width: 30, height: 30 }
             ];
 
             initialSpeed = cat.speed;
@@ -358,13 +271,8 @@
             ctx.translate(-camera.x, 0);
 
             terrain.forEach(obstacle => {
-                
-                if (obstacle.image) {
-                        ctx.drawImage(obstacle.image, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                    } else {
-                        ctx.fillStyle = obstacle.color;
-                        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                    }
+                ctx.fillStyle = obstacle.color;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             });
 
             enemies.forEach((enemy, index) => {
@@ -393,14 +301,14 @@
                     case 'shooter':
                         const now = Date.now();
                         if (now - enemy.lastShot > enemy.shootInterval) {
-                            enemy.bullets.push({x: enemy.x, y: enemy.y + enemy.height / 2, speed: 5});
+                            enemy.bullets.push({x: enemy.x, y: enemy.y + enemy.height / 2, speed: 4});
                             enemy.lastShot = now;
                         }
                         enemy.bullets.forEach((bullet, bulletIndex) => {
                             bullet.x -= bullet.speed;
                             ctx.fillStyle = '#FFFF00';
                             ctx.fillRect(bullet.x, bullet.y, 10, 5);
-                            if (bullet.x < enemy.x - 300) {  // Les balles disparaissent après 300 pixels
+                            if (bullet.x < enemy.x - 300) {
                                 enemy.bullets.splice(bulletIndex, 1);
                             }
                             if (
@@ -547,7 +455,7 @@
                 },
                 body: JSON.stringify({
                     score: finalScore,
-                    level: 1,
+                    level: 3,
                     name: localStorage.getItem('name')
                 })
             })
@@ -595,6 +503,14 @@ victoryTimeElement.textContent = `Temps final: ${finalTime}`;
             if (keys['r'] || keys['R']) {
                 location.reload();
             }
+
+
+            if (keys['i'] || keys['I']) {
+                cat.velocityY = -cat.speed * 5;
+                cat.isJumping = false;
+            }
+
+
         }
 
         document.getElementById('restart').addEventListener('click', resetGame);

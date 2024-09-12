@@ -5,112 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CatAttack</title>
-    <style>
-        @font-face {
-            font-family: 'Undertale';
-            src: url('MonsterFriendFore.otf') format("opentype");
-        }
-
-        body,
-        html {
-            background-image: url('https://static.vecteezy.com/system/resources/previews/004/371/966/non_2x/night-city-landscape-with-a-large-planet-on-the-horizon-and-the-silhouette-of-a-modern-city-with-high-rise-buildings-blue-night-city-landscape-free-vector.jpg');
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        #gameCanvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        #score {
-            position: absolute;
-            top: 40px;
-            right: 10px;
-            color: white;
-            font-size: 24px;
-        }
-
-        #time {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            font-size: 24px;
-        }
-
-        #lives {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: red;
-            font-size: 24px;
-        }
-
-        #gameOver,
-        #victory {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            display: none;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        #gameOver button,
-        #victory button {
-            margin: 15px;
-            padding: 10px 20px;
-        }
-
-        #gameOver,
-        #victory {
-            font-family: 'Undertale', sans-serif;
-            background-color: rgba(0, 0, 0, 0.9);
-            border: 6px solid white;
-            padding: 50px;
-            border-radius: 15px;
-        }
-
-        .undertale-text {
-            font-size: 48px;
-            color: #ffff00;
-            text-shadow: 3px 3px #ff0000;
-            margin-bottom: 30px;
-        }
-
-        .gameOver-button,
-        .victory-button {
-            font-family: 'Undertale', sans-serif;
-            font-size: 24px;
-            background-color: #ffff00;
-            color: #000000;
-            border: 4px solid #ff0000;
-            padding: 15px 30px;
-            margin: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .gameOver-button:hover,
-        .victory-button:hover {
-            background-color: #ff0000;
-            color: #ffff00;
-            border-color: #ffff00;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/level.css') }}">
 </head>
-
 <body>
     <canvas id="gameCanvas"></canvas>
     <div id="time">Temps: 00:00:00</div>
@@ -119,7 +16,7 @@
         <h2 class="undertale-text">Game Over</h2>
         <p class="undertale-text" id="finalTime">Temps final: 00:00:00</p>
         <button id="restart" class="gameOver-button">Recommencer</button>
-        <button class="gameOver-button" onclick="location.reload()">Regénérer le niveau</button>
+        <button class="gameOver-button" onclick="location.reload()">Regenerer le niveau</button>
         <button id="quit" class="gameOver-button">Quitter</button>
     </div>
     <div id="victory">
@@ -406,7 +303,11 @@
                     }
 
                     if (obstacle.hasSpike) {
-                        ctx.drawImage(spikeImage, obstacle.x + obstacle.width / 2 - 15, obstacle.y - 30, 30, 30);
+                        const spikeWidth = 40;
+                        const spikeHeight = 40;
+                        const spikeX = obstacle.x + obstacle.width / 2 - spikeWidth / 2;
+                        const spikeY = obstacle.y - spikeHeight + 5; // Ajustez cette valeur pour que le spike touche le sol
+                        ctx.drawImage(spikeImage, spikeX, spikeY, spikeWidth, spikeHeight);
                     }
 
                     if (obstacle.type === 'moving_platform') {
@@ -433,7 +334,7 @@
                     cat.x + cat.width > enemy.x &&
                     cat.y + cat.height > enemy.y &&
                     cat.y + cat.height < enemy.y + enemy.height / 2) {
-                    // Remove the enemy
+                    // 0pxove the enemy
                     enemies.splice(index, 1);
                     // Make the cat bounce
                     cat.velocityY = -cat.jumpForce / 2;
@@ -493,15 +394,52 @@
 
             switch (selectedSkin) {
                 case 'chat-ninja':
-                    catImageSrc =
-                        'https://www.creativefabrica.com/wp-content/uploads/2022/12/25/Ninja-Cat-Portrait-Steampunk-Style-54365317-1.png';
+                    catImageSrc = 'https://www.creativefabrica.com/wp-content/uploads/2022/12/25/Ninja-Cat-Portrait-Steampunk-Style-54365317-1.png';
                     break;
                 case 'chat-spatial':
-                    catImageSrc =
-                        'https://www.sciencesetavenir.fr/assets/img/2016/03/31/cover-r4x3w1200-57dfbf2666447-space-chat.jpg';
+                    catImageSrc = 'https://www.sciencesetavenir.fr/assets/img/2016/03/31/cover-r4x3w1200-57dfbf2666447-space-chat.jpg';
+                    break;
+                case 'chat-qui-pleure':
+                    catImageSrc = 'https://play-lh.googleusercontent.com/8ySrSsFPK9pA5vO22g3wPWe-ykWf6LffI_fLQud5OoKrXNljmqJNVaB5MInsQp_twk8=w600-h300-pc0xffffff-pd';
+                    break;
+                case 'chat-points':
+                    catImageSrc = 'https://ih1.redbubble.net/image.1684651633.5213/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg';
+                    break;
+                case 'chat-qui-rigole':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5411073292.4625/raf,360x360,075,t,fafafa:ca443f4786.jpg';
+                    break;
+                case 'chat-super-chad':
+                    catImageSrc = 'https://media.tenor.com/eRobnSV9mugAAAAe/giga-cat.png';
+                    break;
+                case 'chat-chad':
+                    catImageSrc = 'https://i.pinimg.com/736x/8b/c1/03/8bc103afbea75b591370177c9b18e52d.jpg';
+                    break;
+                case 'chat-cat':
+                    catImageSrc = 'https://m.media-amazon.com/images/I/41HXUK8edZL.png';
+                    break;
+                case 'chat-backroom':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5186630478.3007/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u2.jpg';
+                    break;
+                case 'chat-fait-la-fete':
+                    catImageSrc = 'https://img.static-rmg.be/a/view/q75/w940/h528/1949024/screen-shot-2017-06-19-at-11-55-53-png.png';
+                    break;
+                case 'chat-se-dore-la-pilule':
+                    catImageSrc = 'https://www.fondationassistanceauxanimaux.org/actu/wp-content/uploads/2023/08/chat-1-1030x928.png';
+                    break;
+                case 'chat-mange':
+                    catImageSrc = 'https://media.tenor.com/0okJBma33jEAAAAe/cat-meme.png';
+                    break;
+                case 'chipi-chipi-chapa':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5382356817.4130/st,medium,507x507-pad,600x600,f8f8f8.webp';
+                    break;
+                case 'yipii':
+                    catImageSrc = 'https://m.media-amazon.com/images/I/61qt0GEHf+L._AC_UF1000,1000_QL80_.jpg';
+                    break;
+                case 'chat-grumpy':
+                    catImageSrc = 'https://media.sudouest.fr/8858304/1200x-1/so-57ebcb7366a4bd6726a93901-ph0.jpg';
                     break;
                 default:
-                    catImageSrc = 'https://s3-us-west-2.amazonaws.com/mb.images/vinafrog/listing/VFSIL0095.jpg';
+                    catImageSrc = 'https://i0.wp.com/matooetpatoo.fr/wp-content/uploads/2022/07/chat-thai-blanc-noir.jpg?resize=1024%2C1024&ssl=1';
             }
 
             catImage.src = catImageSrc;

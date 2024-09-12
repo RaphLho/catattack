@@ -1,38 +1,4 @@
-<style>
-    table {
-        color:white;
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 90%;
-    }
-    td, th {
-        border: 3px solid #dddddd;
-        color:white;
-        text-align: center;
-        padding: 8px;
-    }
-    .nav-button{
-        border-radius: 1em;
-        padding: 5px;
-        background-color: #4caf50;
-    }
-    .disabled{
-        background-color: grey;
-    }
-    .level{
-        display: grid;
-        grid-template-columns: 10% 80% 10%
-    }
-    .gold{
-        color: gold
-    }
-    .silver{
-        color: silver;
-    }
-    .bronze{
-        color: #6c4518
-    }
-</style>
+
 <table>
     <tr>
         <th colspan="3">

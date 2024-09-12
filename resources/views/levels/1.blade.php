@@ -4,84 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CatAttack - Niveau 1</title>
-    <style>
-        @font-face {
-            font-family: 'Undertale';
-            src: url('MonsterFriendFore.otf') format("opentype");
-        }
-        body, html {
-            background-color: #1a1a2e;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        #gameCanvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        #score {
-            position: absolute;
-            top: 40px;
-            right: 10px;
-            color: white;
-            font-size: 24px;
-        }
-        #time {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            font-size: 24px;
-        }
-        #lives {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: red;
-            font-size: 24px;
-        }
-        #gameOver, #victory {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 50px;
-            text-align: center;
-            display: none;
-            width: 80%;
-            max-width: 600px;
-            border: 6px solid white;
-            border-radius: 15px;
-            font-family: 'Undertale', sans-serif;
-        }
-        .undertale-text {
-            font-size: 48px;
-            color: #ffff00;
-            text-shadow: 3px 3px #ff0000;
-            margin-bottom: 30px;
-        }
-        .gameOver-button, .victory-button {
-            font-family: 'Undertale', sans-serif;
-            font-size: 24px;
-            background-color: #ffff00;
-            color: #000000;
-            border: 4px solid #ff0000;
-            padding: 15px 30px;
-            margin: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .gameOver-button:hover, .victory-button:hover {
-            background-color: #ff0000;
-            color: #ffff00;
-            border-color: #ffff00;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/level.css') }}">
+
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
@@ -131,9 +56,9 @@
             y: 200,
             width: 40,
             height: 40,
-            speed: 10,
+            speed: 5,
             jumpForce: 15,
-            gravity: 0.5,
+            gravity: 0.3,
             isJumping: false,
             velocityY: 0,
             velocityX: 0
@@ -157,30 +82,13 @@
         platformImage.src =
             'https://static.vecteezy.com/system/resources/previews/003/678/912/non_2x/stone-tiles-texture-in-cartoon-style-free-vector.jpg';
 
-        const moovingPlatformImage = new Image();
-        moovingPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/448/235/non_2x/light-brown-cartoon-wood-texture-pattern-wallpaper-background-free-vector.jpg';
-
         const spikeImage = new Image();
         spikeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/003/758/560/non_2x/spear-icon-fairy-tale-knight-armor-fairytale-soldier-sword-cartoon-medieval-weapon-illustration-vector.jpg';
-
-        const holeImage = new Image();
-        holeImage.src =
-            'https://static.vecteezy.com/system/resources/previews/046/307/862/non_2x/water-ripple-surface-with-sunlight-reflections-in-cartoon-style-game-texture-top-view-beach-ocean-clean-and-deep-water-vector.jpg';
-
-
-        const highPlatformImage = new Image();
-        highPlatformImage.src =
-            'https://static.vecteezy.com/system/resources/previews/013/987/849/non_2x/stone-wall-from-bricks-rock-game-background-in-cartoon-style-seamless-textured-surface-ui-game-asset-road-or-floor-material-illustration-vector.jpg';
+            'https://static.vecteezy.com/system/resources/previews/021/815/622/large_2x/triangle-shape-icon-sign-free-png.png';
 
         const finishLine = new Image();
         finishLine.src =
             'https://media.istockphoto.com/id/537073587/fr/vectoriel/%C3%A9chiquier.jpg?s=612x612&w=0&k=20&c=XqGNOIwnHXqrPg-Iz1rLsgRVQY8CdEvU85mPJSn8tUU=';
-
-        const startLine = new Image();
-        startLine.src =
-            'https://static.vecteezy.com/system/resources/previews/040/520/651/non_2x/brown-wooden-texture-and-background-vector.jpg';
 
         const monsterImg = new Image();
         monsterImg.src = 'https://static.vecteezy.com/system/resources/previews/022/946/248/large_2x/cute-monster-character-colored-red-with-angry-expression-3d-illustration-generative-ai-free-png.png';
@@ -274,14 +182,14 @@
             ];
 
             enemies = [
-                { type: 'runner', x: 700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 5, direction: 1, minX: 700, maxX: 900 },
-                { type: 'jumper', x: 1500, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 15, gravity: 0.5, isJumping: false },
-                { type: 'shooter', x: 2300, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 2000, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 3100, y: canvas.height - groundHeight - 100, width: 30, height: 30, speed: 3, amplitude: 50, angle: 0 },
-                { type: 'runner', x: 3900, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 6, direction: 1, minX: 3900, maxX: 4100 },
-                { type: 'jumper', x: 4700, y: canvas.height - groundHeight - 30, width: 30, height: 30, speed: 2, jumpForce: 18, gravity: 0.5, isJumping: false },
-                { type: 'shooter', x: 5500, y: canvas.height - groundHeight - 30, width: 30, height: 30, shootInterval: 1500, lastShot: 0, bullets: [] },
-                { type: 'flyer', x: 6300, y: canvas.height - groundHeight - 150, width: 30, height: 30, speed: 4, amplitude: 80, angle: 0 }
+                { type: 'runner', x: 700, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 3, direction: 1, minX: 700, maxX: 900 },
+                { type: 'jumper', x: 1500, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 1, jumpForce: 15, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 2300, y: canvas.height - groundHeight - 60, width: 60, height: 60, shootInterval: 2000, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 3100, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 2, amplitude: 50, angle: 0 },
+                { type: 'runner', x: 3900, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 4, direction: 1, minX: 3900, maxX: 4100 },
+                { type: 'jumper', x: 4700, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 1, jumpForce: 18, gravity: 0.5, isJumping: false },
+                { type: 'shooter', x: 5500, y: canvas.height - groundHeight - 60, width: 60, height: 60, shootInterval: 1500, lastShot: 0, bullets: [] },
+                { type: 'flyer', x: 6300, y: canvas.height - groundHeight - 60, width: 60, height: 60, speed: 3, amplitude: 80, angle: 0 }
             ];
 
             spikes = [
@@ -368,8 +276,7 @@
             });
 
             enemies.forEach((enemy, index) => {
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+                ctx.drawImage(monsterImg, enemy.x, enemy.y, enemy.width, enemy.height);
                 
                 switch(enemy.type) {
                     case 'runner':
@@ -433,7 +340,7 @@
                     if (cat.velocityY > 0 && cat.y < enemy.y) {
                         // Le chat saute sur l'ennemi
                         enemies.splice(index, 1);
-                        cat.velocityY = -cat.jumpForce / 2; // Petit rebond après avoir tué l'ennemi
+                        cat.velocityY = -cat.jumpForce / 2; // Petit rebond après avoir tue l'ennemi
                         updateScore()
                     } else {
                         loseLife();
@@ -442,19 +349,16 @@
             });
 
             spikes.forEach(spike => {
-                ctx.fillStyle = '#FF00FF';
-                ctx.beginPath();
-                ctx.moveTo(spike.x, spike.y + spike.height);
-                ctx.lineTo(spike.x + spike.width / 2, spike.y);
-                ctx.lineTo(spike.x + spike.width, spike.y + spike.height);
-                ctx.closePath();
-                ctx.fill();
+                const spikeWidth = 40;
+                const spikeHeight = 40;
+                const spikeY = canvas.height - groundHeight - spikeHeight + 5;
+                ctx.drawImage(spikeImage, spike.x, spikeY, spikeWidth, spikeHeight);
 
                 if (
-                    cat.x < spike.x + spike.width &&
+                    cat.x < spike.x + spikeWidth &&
                     cat.x + cat.width > spike.x &&
-                    cat.y < spike.y + spike.height &&
-                    cat.y + cat.height > spike.y
+                    cat.y < spikeY + spikeHeight &&
+                    cat.y + cat.height > spikeY
                 ) {
                     loseLife();
                 }
@@ -494,8 +398,47 @@
                 case 'chat-spatial':
                     catImageSrc = 'https://www.sciencesetavenir.fr/assets/img/2016/03/31/cover-r4x3w1200-57dfbf2666447-space-chat.jpg';
                     break;
+                case 'chat-qui-pleure':
+                    catImageSrc = 'https://play-lh.googleusercontent.com/8ySrSsFPK9pA5vO22g3wPWe-ykWf6LffI_fLQud5OoKrXNljmqJNVaB5MInsQp_twk8=w600-h300-pc0xffffff-pd';
+                    break;
+                case 'chat-points':
+                    catImageSrc = 'https://ih1.redbubble.net/image.1684651633.5213/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg';
+                    break;
+                case 'chat-qui-rigole':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5411073292.4625/raf,360x360,075,t,fafafa:ca443f4786.jpg';
+                    break;
+                case 'chat-super-chad':
+                    catImageSrc = 'https://media.tenor.com/eRobnSV9mugAAAAe/giga-cat.png';
+                    break;
+                case 'chat-chad':
+                    catImageSrc = 'https://i.pinimg.com/736x/8b/c1/03/8bc103afbea75b591370177c9b18e52d.jpg';
+                    break;
+                case 'chat-cat':
+                    catImageSrc = 'https://m.media-amazon.com/images/I/41HXUK8edZL.png';
+                    break;
+                case 'chat-backroom':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5186630478.3007/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u2.jpg';
+                    break;
+                case 'chat-fait-la-fete':
+                    catImageSrc = 'https://img.static-rmg.be/a/view/q75/w940/h528/1949024/screen-shot-2017-06-19-at-11-55-53-png.png';
+                    break;
+                case 'chat-se-dore-la-pilule':
+                    catImageSrc = 'https://www.fondationassistanceauxanimaux.org/actu/wp-content/uploads/2023/08/chat-1-1030x928.png';
+                    break;
+                case 'chat-mange':
+                    catImageSrc = 'https://media.tenor.com/0okJBma33jEAAAAe/cat-meme.png';
+                    break;
+                case 'chipi-chipi-chapa':
+                    catImageSrc = 'https://ih1.redbubble.net/image.5382356817.4130/st,medium,507x507-pad,600x600,f8f8f8.webp';
+                    break;
+                case 'yipii':
+                    catImageSrc = 'https://m.media-amazon.com/images/I/61qt0GEHf+L._AC_UF1000,1000_QL80_.jpg';
+                    break;
+                case 'chat-grumpy':
+                    catImageSrc = 'https://media.sudouest.fr/8858304/1200x-1/so-57ebcb7366a4bd6726a93901-ph0.jpg';
+                    break;
                 default:
-                    catImageSrc = 'https://s3-us-west-2.amazonaws.com/mb.images/vinafrog/listing/VFSIL0095.jpg';
+                    catImageSrc = 'https://i0.wp.com/matooetpatoo.fr/wp-content/uploads/2022/07/chat-thai-blanc-noir.jpg?resize=1024%2C1024&ssl=1';
             }
 
             catImage.src = catImageSrc;

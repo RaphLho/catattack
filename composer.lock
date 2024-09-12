@@ -708,9 +708,9 @@
                     "homepage": "https://github.com/mtdowling"
                 },
                 {
-                    "name": "Jeremy Lindblom",
-                    "email": "jeremeamia@gmail.com",
-                    "homepage": "https://github.com/jeremeamia"
+                    "name": "Je0pxy Lindblom",
+                    "email": "je0pxeamia@gmail.com",
+                    "homepage": "https://github.com/je0pxeamia"
                 },
                 {
                     "name": "George Mponos",
@@ -5638,7 +5638,7 @@
             "suggest": {
                 "doctrine/orm": "Required to use Faker\\ORM\\Doctrine",
                 "ext-curl": "Required by Faker\\Provider\\Image to download images.",
-                "ext-dom": "Required by Faker\\Provider\\HtmlLorem for generating random HTML.",
+                "ext-dom": "Required by Faker\\Provider\\HtmlLo0px for generating random HTML.",
                 "ext-iconv": "Required by Faker\\Provider\\ru_RU\\Text::realText() for generating real Russian text.",
                 "ext-mbstring": "Required for multibyte Unicode string functionality."
             },
